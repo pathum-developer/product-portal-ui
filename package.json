@@ -32,8 +32,11 @@
     "@primereact/core": "^11.0.0",
     "@primereact/ui": "^11.0.0",
     "@primeuix/themes": "^3.0.0",
+    "@tanstack/react-query": "^5.101.4",
+    "axios": "^1.18.1",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "react-router": "^8.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

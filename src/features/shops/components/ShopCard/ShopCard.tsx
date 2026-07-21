@@ -5,7 +5,7 @@ import { Button } from '@primereact/ui/button';
 import { Card } from '@primereact/ui/card';
 import { Tag } from '@primereact/ui/tag';
 
-import type { Shop } from '../../types/shop';
+import type { Shop } from '@/features/shops/types/shop';
 
 interface ShopCardProps {
   readonly shop: Shop;
@@ -48,7 +48,8 @@ function ShopCard({ shop }: ShopCardProps) {
           <Card.Title>
             <h2
               id={titleId}
-              className="mb-0 mt-3 text-base font-semibold leading-5 text-color sm:text-lg xl:text-base 2xl:text-lg"
+              className="mb-0 mt-3 line-clamp-2 min-h-10 text-base font-semibold leading-5 text-color sm:text-lg xl:text-base 2xl:text-lg"
+              title={shop.name}
             >
               {shop.name}
             </h2>

@@ -1,6 +1,6 @@
 import { Box } from '@primeicons/react/box';
 
-import { LEGAL_NAVIGATION, SITE_NAME } from '../../config/site';
+import { LEGAL_NAVIGATION, SITE_NAME } from '@/config/site';
 
 interface FooterProps {
   readonly currentYear?: number;

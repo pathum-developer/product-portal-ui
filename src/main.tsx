@@ -5,7 +5,7 @@ import Aura from '@primeuix/themes/aura';
 
 import { environment } from './config/environment';
 import './index.css';
-import App from './App.tsx';
+import { App } from './app/App';
 
 const primeReactConfig = {
   theme: {

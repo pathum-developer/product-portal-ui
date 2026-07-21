@@ -8,6 +8,9 @@ Enterprise React user interface for a product portal, built with Vite, TypeScrip
 - Vite 8 for local development and production builds
 - PrimeReact 11 Community with the Aura theme
 - Tailwind CSS 4 with `tailwindcss-primeui`
+- React Router for route ownership and code-splitting
+- TanStack Query for Spring Boot server state
+- Axios for centralized REST communication
 - ESLint for code quality checks
 
 ## Prerequisites
@@ -22,7 +25,7 @@ https://primeui.dev/licenses/community
 
 ## Getting Started
 
-Create a local environment file and add your PrimeUI key:
+Create a local environment file, configure the Spring Boot API base URL, and add your PrimeUI key:
 
 ```bash
 cp .env.example .env.local
@@ -58,13 +61,25 @@ npm run build
 
 ```text
 src/
-  components/     Shared application components
+  app/            Application shell, providers, layouts, and routing
+  assets/         Static application assets
   config/         Environment and runtime configuration
-  pages/          Route-level views, added as features grow
-  services/       API clients and service integrations
-  types/          Shared TypeScript contracts
-  utils/          Reusable utilities
+  features/       Business modules aligned with backend domains
+    shops/        Shop UI, API integration, types, and pages
+  shared/         Cross-feature API client and reusable UI components
 ```
+
+## Spring Boot Integration
+
+`VITE_API_BASE_URL` configures the API base path and defaults to `/api`.
+`VITE_API_TIMEOUT_MS` configures the Axios request timeout and defaults to `10000`. Keep Spring
+Boot contracts at the feature boundary: a feature's API module calls the backend, maps response
+DTOs to frontend types, and exposes TanStack Query hooks. Components must consume those feature
+types rather than backend DTOs directly.
+
+When an OpenAPI contract is available, generate its TypeScript client under
+`src/shared/api/generated/` and wrap it inside the relevant feature API module. Do not import the
+generated client from components or pages.
 
 ## PrimeReact and Tailwind
 

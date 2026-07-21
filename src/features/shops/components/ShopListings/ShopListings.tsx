@@ -1,5 +1,5 @@
-import type { Shop } from '../../types/shop';
-import { ShopCard } from '../ShopCard';
+import { ShopCard } from '@/features/shops/components/ShopCard';
+import type { Shop } from '@/features/shops/types/shop';
 
 interface ShopListingsProps {
   readonly shops: readonly Shop[];

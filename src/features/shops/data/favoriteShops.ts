@@ -1,15 +1,15 @@
-import type { Shop } from '../types/shop';
+import type { Shop } from '@/features/shops/types/shop';
 
-import activeLifeImage from '../../../assets/shops/active-life.jpg';
-import artisanCornerImage from '../../../assets/shops/artisan-corner.jpg';
-import greenBasketImage from '../../../assets/shops/green-basket.jpg';
-import happyPawsImage from '../../../assets/shops/happy-paws.jpg';
-import homeAndHavenImage from '../../../assets/shops/home-and-haven.jpg';
-import lunaBeautyImage from '../../../assets/shops/luna-beauty.jpg';
-import northstarElectronicsImage from '../../../assets/shops/northstar-electronics.jpg';
-import playhouseImage from '../../../assets/shops/playhouse.jpg';
-import theBookNookImage from '../../../assets/shops/the-book-nook.jpg';
-import urbanThreadImage from '../../../assets/shops/urban-thread.jpg';
+import activeLifeImage from '@/assets/shops/active-life.jpg';
+import artisanCornerImage from '@/assets/shops/artisan-corner.jpg';
+import greenBasketImage from '@/assets/shops/green-basket.jpg';
+import happyPawsImage from '@/assets/shops/happy-paws.jpg';
+import homeAndHavenImage from '@/assets/shops/home-and-haven.jpg';
+import lunaBeautyImage from '@/assets/shops/luna-beauty.jpg';
+import northstarElectronicsImage from '@/assets/shops/northstar-electronics.jpg';
+import playhouseImage from '@/assets/shops/playhouse.jpg';
+import theBookNookImage from '@/assets/shops/the-book-nook.jpg';
+import urbanThreadImage from '@/assets/shops/urban-thread.jpg';
 
 export const FAVORITE_SHOPS: readonly Shop[] = [
   {
@@ -24,7 +24,7 @@ export const FAVORITE_SHOPS: readonly Shop[] = [
   },
   {
     id: 'urban-thread',
-    name: 'Urban Thread',
+    name: 'Urban Thread Urban Thread Urban Thread Urban Thread Urban Thread Urban Thread Urban Thread Urban Thread',
     category: 'Fashion',
     description: 'Contemporary clothing and accessories designed for effortless everyday style.',
     location: 'Colombo 07',
