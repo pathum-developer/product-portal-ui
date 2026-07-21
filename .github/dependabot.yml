@@ -6,7 +6,7 @@ updates:
     schedule:
       interval: weekly
       day: monday
-      time: "09:00"
+      time: '09:00'
       timezone: Asia/Colombo
     open-pull-requests-limit: 5
     groups:
@@ -14,12 +14,12 @@ updates:
         patterns:
           - react
           - react-dom
-          - "@types/react"
-          - "@types/react-dom"
+          - '@types/react'
+          - '@types/react-dom'
       tooling:
         patterns:
-          - "@eslint/*"
-          - "@vitejs/*"
+          - '@eslint/*'
+          - '@vitejs/*'
           - eslint
           - eslint-*
           - typescript
@@ -31,6 +31,6 @@ updates:
     schedule:
       interval: weekly
       day: monday
-      time: "09:00"
+      time: '09:00'
       timezone: Asia/Colombo
     open-pull-requests-limit: 3

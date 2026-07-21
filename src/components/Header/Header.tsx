@@ -1,33 +1,33 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import { Bars } from '@primeicons/react/bars'
-import { Box } from '@primeicons/react/box'
-import { Times } from '@primeicons/react/times'
-import { User } from '@primeicons/react/user'
-import { Button } from '@primereact/ui/button'
+import { Bars } from '@primeicons/react/bars';
+import { Box } from '@primeicons/react/box';
+import { Times } from '@primeicons/react/times';
+import { User } from '@primeicons/react/user';
+import { Button } from '@primereact/ui/button';
 
-import { PRIMARY_NAVIGATION, SITE_NAME } from '../../config/site'
+import { PRIMARY_NAVIGATION, SITE_NAME } from '../../config/site';
 
 function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const closeMenuOnEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setIsMenuOpen(false)
+        setIsMenuOpen(false);
       }
-    }
+    };
 
-    document.addEventListener('keydown', closeMenuOnEscape)
+    document.addEventListener('keydown', closeMenuOnEscape);
 
-    return () => document.removeEventListener('keydown', closeMenuOnEscape)
-  }, [])
+    return () => document.removeEventListener('keydown', closeMenuOnEscape);
+  }, []);
 
-  const closeMenu = () => setIsMenuOpen(false)
+  const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <header className="sticky top-0 z-50 border-b border-surface bg-surface-0/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-12 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
         <a
           className="flex items-center gap-3 text-color no-underline focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
           href="/"
@@ -69,7 +69,11 @@ function Header() {
           aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
           onClick={() => setIsMenuOpen((isOpen) => !isOpen)}
         >
-          {isMenuOpen ? <Times size={20} aria-hidden="true" /> : <Bars size={20} aria-hidden="true" />}
+          {isMenuOpen ? (
+            <Times size={20} aria-hidden="true" />
+          ) : (
+            <Bars size={20} aria-hidden="true" />
+          )}
         </button>
       </div>
 
@@ -103,7 +107,7 @@ function Header() {
         </nav>
       )}
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;

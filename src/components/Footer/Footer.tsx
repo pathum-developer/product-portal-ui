@@ -1,9 +1,9 @@
-import { Box } from '@primeicons/react/box'
+import { Box } from '@primeicons/react/box';
 
-import { LEGAL_NAVIGATION, SITE_NAME } from '../../config/site'
+import { LEGAL_NAVIGATION, SITE_NAME } from '../../config/site';
 
 interface FooterProps {
-  readonly currentYear?: number
+  readonly currentYear?: number;
 }
 
 function Footer({ currentYear = new Date().getFullYear() }: FooterProps) {
@@ -34,13 +34,16 @@ function Footer({ currentYear = new Date().getFullYear() }: FooterProps) {
               </a>
             ))}
           </nav>
-          <span className="text-xs text-muted-color" aria-label={`Application version ${__APP_VERSION__}`}>
+          <span
+            className="text-xs text-muted-color"
+            aria-label={`Application version ${__APP_VERSION__}`}
+          >
             v{__APP_VERSION__}
           </span>
         </div>
       </div>
     </footer>
-  )
+  );
 }
 
-export default Footer
+export default Footer;

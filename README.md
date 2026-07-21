@@ -71,7 +71,7 @@ src/
 PrimeReact components are imported from their package entry points:
 
 ```tsx
-import { Button } from '@primereact/ui/button'
+import { Button } from '@primereact/ui/button';
 ```
 
 Tailwind utilities can be used directly with PrimeReact components:

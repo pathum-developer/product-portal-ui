@@ -305,6 +305,32 @@ Keep styles component scoped.
 
 ---
 
+# Responsive Design
+
+Every new or modified visual component must support mobile, tablet, and desktop viewports.
+
+Use a mobile-first implementation and follow the project's shared Tailwind breakpoints. Do not add component-specific breakpoints unless the design requires them and the decision is documented.
+
+At minimum, verify each component at these viewport widths while implementing it:
+
+- Mobile: 360px
+- Tablet: 768px
+- Desktop: 1280px
+
+At every required viewport, confirm:
+
+- No unintended horizontal scrolling or clipped content.
+- Content remains readable and actions remain usable.
+- Layout, spacing, typography, images, tables, and navigation adapt appropriately.
+- Interactive targets remain accessible by touch, keyboard, and pointer.
+- Loading, error, empty, and populated states remain responsive when applicable.
+
+Add or update Playwright viewport coverage for responsive behavior when a component has layout changes, breakpoint-specific behavior, navigation, overlays, tables, or other regression risk. Include mobile, tablet, and desktop evidence in the pull request for visible UI changes.
+
+Do not consider a visual component complete until all three viewport classes have been checked.
+
+---
+
 # Accessibility
 
 Always include

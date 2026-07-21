@@ -1,14 +1,17 @@
-import { Footer } from './components/Footer'
-import { Header } from './components/Header'
+import { Footer } from './components/Footer';
+import { Header } from './components/Header';
+import { Home } from './pages/Home';
 
 function App() {
   return (
     <div className="flex min-h-screen flex-col bg-surface-0 text-color">
       <Header />
-      <main id="main-content" className="flex-1" />
+      <main id="main-content" className="flex-1">
+        <Home />
+      </main>
       <Footer />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
