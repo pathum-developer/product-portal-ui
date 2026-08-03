@@ -27,7 +27,7 @@ function ShopListings({ shops }: ShopListingsProps) {
       <h2 id="shop-listings-title" className="sr-only">
         Favorite shop listings
       </h2>
-      <ul className="m-0 grid list-none grid-cols-2 gap-3 p-0 md:grid-cols-4 xl:grid-cols-8">
+      <ul className="m-0 grid list-none grid-cols-2 gap-3 p-0 md:grid-cols-4 xl:grid-cols-6">
         {shops.map((shop) => (
           <li key={shop.id} className="min-w-0">
             <ShopCard shop={shop} />
