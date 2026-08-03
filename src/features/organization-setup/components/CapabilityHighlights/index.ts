@@ -1,0 +1,1 @@
+export { CapabilityHighlights } from './CapabilityHighlights';

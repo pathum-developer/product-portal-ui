@@ -12,6 +12,12 @@ const MyShopsPage = lazy(async () => {
   return { default: Component };
 });
 
+const SelectDeploymentModePage = lazy(async () => {
+  const { SelectDeploymentModePage: Component } =
+    await import('@/features/organization-setup/pages');
+  return { default: Component };
+});
+
 export function HomeRouteElement() {
   return (
     <Suspense fallback={<RouteLoading />}>
@@ -24,6 +30,14 @@ export function MyShopsRouteElement() {
   return (
     <Suspense fallback={<RouteLoading />}>
       <MyShopsPage />
+    </Suspense>
+  );
+}
+
+export function SelectDeploymentModeRouteElement() {
+  return (
+    <Suspense fallback={<RouteLoading />}>
+      <SelectDeploymentModePage />
     </Suspense>
   );
 }

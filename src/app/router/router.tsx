@@ -1,7 +1,11 @@
 import { createBrowserRouter } from 'react-router';
 
 import { ApplicationLayout } from '@/app/layouts/ApplicationLayout';
-import { HomeRouteElement, MyShopsRouteElement } from '@/app/router/LazyRouteElements';
+import {
+  HomeRouteElement,
+  MyShopsRouteElement,
+  SelectDeploymentModeRouteElement,
+} from '@/app/router/LazyRouteElements';
 import { NotFoundPage } from '@/app/router/NotFoundPage';
 import { RouteErrorPage } from '@/app/router/RouteErrorPage';
 
@@ -12,6 +16,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomeRouteElement /> },
       { path: 'my-shops', element: <MyShopsRouteElement /> },
+      { path: 'register', element: <SelectDeploymentModeRouteElement /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

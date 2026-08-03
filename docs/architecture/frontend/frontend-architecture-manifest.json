@@ -304,7 +304,7 @@
       "name": "organization-setup",
       "path": "src/features/organization-setup",
       "kind": "CROSS_CONTEXT_WORKFLOW",
-      "status": "STRUCTURE_ONLY",
+      "status": "PARTIALLY_IMPLEMENTED",
       "contractStatus": "BACKEND_CONTRACT_REQUIRED",
       "backendContexts": ["IDENTITY_ACCESS", "TENANCY", "STAFF_ACCESS", "AUDIT"],
       "responsibilities": [
@@ -316,23 +316,43 @@
         {
           "path": "/register",
           "page": "SelectDeploymentModePage",
-          "purpose": "Select the appropriate commercial onboarding path."
+          "purpose": "Select the appropriate commercial onboarding path.",
+          "status": "IMPLEMENTED"
         },
         {
           "path": "/register/multi-tenant",
           "page": "MultiTenantBusinessRegistrationPage",
-          "purpose": "Register a business on the shared multi-tenant platform."
+          "purpose": "Register a business on the shared multi-tenant platform.",
+          "status": "STRUCTURE_ONLY"
         },
         {
           "path": "/register/standalone",
           "page": "StandaloneInformationPage",
-          "purpose": "Explain the standalone offering, pricing, and how to contact the team for a separately configured environment."
+          "purpose": "Explain the standalone offering, pricing, and how to contact the team for a separately configured environment.",
+          "status": "STRUCTURE_ONLY"
         }
       ],
-      "plannedComponents": [
-        "DeploymentModeSelector",
-        "MultiTenantBusinessRegistrationForm",
-        "StandaloneOfferingDetails"
+      "components": [
+        {
+          "name": "DeploymentModeSelector",
+          "status": "IMPLEMENTED"
+        },
+        {
+          "name": "CapabilityHighlights",
+          "status": "IMPLEMENTED"
+        },
+        {
+          "name": "SetupProcess",
+          "status": "IMPLEMENTED"
+        },
+        {
+          "name": "MultiTenantBusinessRegistrationForm",
+          "status": "STRUCTURE_ONLY"
+        },
+        {
+          "name": "StandaloneOfferingDetails",
+          "status": "STRUCTURE_ONLY"
+        }
       ],
       "deploymentModePolicy": {
         "selectionPurpose": "The public selection chooses a commercial onboarding path; it does not reconfigure the running platform.",
