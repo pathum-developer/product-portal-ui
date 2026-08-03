@@ -2,23 +2,28 @@
 
 ## Supported Versions
 
-Security fixes are maintained for the active `main` branch.
+Security fixes are applied to the latest code on the `main` branch.
 
 ## Reporting a Vulnerability
 
-Do not open public issues for security vulnerabilities.
+Please do not open public issues for suspected security vulnerabilities.
 
-Use GitHub private vulnerability reporting if it is enabled for this repository. If it is not enabled, contact the repository owner or project maintainer directly through GitHub.
+Report vulnerabilities privately to the repository owner with:
 
-Include:
+- A clear summary of the issue
+- Steps to reproduce, if available
+- The affected files, packages, routes, or configuration
+- Any known impact or mitigation
 
-- A clear description of the vulnerability
-- Steps to reproduce
-- Affected files, routes, or dependencies
-- Any known impact or workaround
+After a report is received, the vulnerability will be reviewed, triaged, and fixed based on severity.
 
-## Secret Management
+## Dependency Security
 
-Never commit secrets to the repository. Local secrets belong in ignored environment files such as `.env.local`.
+Dependencies should be reviewed during regular maintenance. Before merging dependency updates, run:
 
-Frontend environment variables are visible in browser builds. Do not place server credentials, private API keys, or internal tokens in Vite environment variables.
+```bash
+npm run lint
+npm run build
+```
+
+Do not commit secrets, `.env.local`, build artifacts, logs, or dependency folders.
