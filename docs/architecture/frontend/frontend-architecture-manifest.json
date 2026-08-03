@@ -6,7 +6,7 @@
     "status": "ACTIVE",
     "owner": "Frontend Engineering",
     "executable": false,
-    "lastReviewed": "2026-08-03",
+    "lastReviewed": "2026-08-04",
     "purpose": "Versioned architectural reference for keeping the frontend structure aligned with the retail platform backend bounded contexts.",
     "scope": "React application layers, feature ownership, Axios transport boundaries, TanStack Query server-state boundaries, tenant-aware behavior, and backend-to-frontend context mappings.",
     "sourceOfTruthPolicy": "The implemented source tree is authoritative for current frontend behavior. This manifest records reviewed architectural intent and must be updated in the same pull request as structural changes.",
@@ -208,7 +208,7 @@
     {
       "context": "TENANCY",
       "backendSchemaModules": ["TENANCY"],
-      "frontendFeatures": ["tenancy", "organizations", "shops", "organization-onboarding"],
+      "frontendFeatures": ["tenancy", "organizations", "shops", "organization-setup"],
       "backendPlanningName": "tenancy",
       "responsibilities": [
         "organization resolution",
@@ -301,12 +301,45 @@
       "backendContexts": []
     },
     {
-      "name": "organization-onboarding",
-      "path": "src/features/organization-onboarding",
+      "name": "organization-setup",
+      "path": "src/features/organization-setup",
       "kind": "CROSS_CONTEXT_WORKFLOW",
       "status": "STRUCTURE_ONLY",
       "contractStatus": "BACKEND_CONTRACT_REQUIRED",
-      "backendContexts": ["IDENTITY_ACCESS", "TENANCY", "STAFF_ACCESS", "AUDIT"]
+      "backendContexts": ["IDENTITY_ACCESS", "TENANCY", "STAFF_ACCESS", "AUDIT"],
+      "responsibilities": [
+        "present multi-tenant and standalone offering choices",
+        "route multi-tenant customers into business registration",
+        "present standalone system information, pricing, and a contact-team path"
+      ],
+      "plannedRoutes": [
+        {
+          "path": "/register",
+          "page": "SelectDeploymentModePage",
+          "purpose": "Select the appropriate commercial onboarding path."
+        },
+        {
+          "path": "/register/multi-tenant",
+          "page": "MultiTenantBusinessRegistrationPage",
+          "purpose": "Register a business on the shared multi-tenant platform."
+        },
+        {
+          "path": "/register/standalone",
+          "page": "StandaloneInformationPage",
+          "purpose": "Explain the standalone offering, pricing, and how to contact the team for a separately configured environment."
+        }
+      ],
+      "plannedComponents": [
+        "DeploymentModeSelector",
+        "MultiTenantBusinessRegistrationForm",
+        "StandaloneOfferingDetails"
+      ],
+      "deploymentModePolicy": {
+        "selectionPurpose": "The public selection chooses a commercial onboarding path; it does not reconfigure the running platform.",
+        "multiTenant": "Continue to business registration for the shared multi-tenant platform.",
+        "standalone": "Show informational pricing and contact guidance for provisioning a separate environment.",
+        "runtimeConfiguration": "The effective deployment mode must come from secured server or environment configuration and cannot be changed by browser input."
+      }
     },
     {
       "name": "authentication",
