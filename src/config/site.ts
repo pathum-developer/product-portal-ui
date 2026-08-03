@@ -8,6 +8,7 @@ export const SITE_NAME = 'Product Portal';
 export const PRIMARY_NAVIGATION: readonly NavigationItem[] = [
   { label: 'Home', href: '/' },
   { label: 'MyShops', href: '/my-shops' },
+  { label: 'Register', href: '/register-business' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];

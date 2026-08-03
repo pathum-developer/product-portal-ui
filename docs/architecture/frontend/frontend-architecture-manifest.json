@@ -1,0 +1,472 @@
+{
+  "documentType": "frontend-architecture-manifest",
+  "formatVersion": "1.0.0",
+  "metadata": {
+    "name": "Product Portal Frontend Architecture",
+    "status": "ACTIVE",
+    "owner": "Frontend Engineering",
+    "executable": false,
+    "lastReviewed": "2026-08-03",
+    "purpose": "Versioned architectural reference for keeping the frontend structure aligned with the retail platform backend bounded contexts.",
+    "scope": "React application layers, feature ownership, Axios transport boundaries, TanStack Query server-state boundaries, tenant-aware behavior, and backend-to-frontend context mappings.",
+    "sourceOfTruthPolicy": "The implemented source tree is authoritative for current frontend behavior. This manifest records reviewed architectural intent and must be updated in the same pull request as structural changes.",
+    "maintenanceRule": "Review this manifest whenever the backend schema, OpenAPI contract, frontend feature ownership, application layers, or cross-cutting data-access policies change."
+  },
+  "relatedArtifacts": {
+    "backendSchema": {
+      "path": "src/features/shops/data/retail-platform-schema-design.json",
+      "documentType": "relational-database-design",
+      "formatVersion": "1.4.0",
+      "relationship": "Provides backend domain boundaries, tenant rules, security invariants, and persistence terminology. It is not a frontend API contract.",
+      "updateRule": "Changes to backend modules or cross-table business rules must trigger a review of backendContextMappings."
+    },
+    "apiContract": {
+      "recommendedFormat": "OpenAPI 3.1",
+      "status": "REQUIRED_NOT_PRESENT",
+      "generatedClientDirectory": "src/shared/api/generated",
+      "relationship": "OpenAPI is the authoritative contract for frontend request and response DTO generation."
+    },
+    "packageManifest": {
+      "path": "package.json",
+      "relationship": "Authoritative source for framework, library, and tool versions."
+    }
+  },
+  "architecture": {
+    "style": "MODULAR_FRONTEND_MONOLITH",
+    "decision": "Organize by user-facing business capabilities and bounded contexts instead of mirroring database tables.",
+    "layers": [
+      {
+        "name": "app",
+        "path": "src/app",
+        "responsibility": "Application composition, providers, layouts, routing, and top-level error boundaries.",
+        "allowedDependencies": ["features", "shared", "config"]
+      },
+      {
+        "name": "features",
+        "path": "src/features",
+        "responsibility": "Vertical business capabilities containing their own transport adapters, queries, models, UI, pages, and routes.",
+        "allowedDependencies": [
+          "shared",
+          "config",
+          "explicit public APIs exposed by another feature"
+        ]
+      },
+      {
+        "name": "shared",
+        "path": "src/shared",
+        "responsibility": "Business-agnostic HTTP infrastructure, generated API client, reusable UI, hooks, and utilities.",
+        "allowedDependencies": ["config"]
+      },
+      {
+        "name": "config",
+        "path": "src/config",
+        "responsibility": "Validated environment and site-level configuration.",
+        "allowedDependencies": []
+      },
+      {
+        "name": "assets",
+        "path": "src/assets",
+        "responsibility": "Static frontend assets.",
+        "allowedDependencies": []
+      }
+    ],
+    "dependencyRules": [
+      "shared must not import app or features.",
+      "features must not import app.",
+      "Features must not deep-import another feature's internal files.",
+      "Cross-feature composition belongs in app or in an explicit workflow feature.",
+      "Pages compose feature components and hooks but do not contain endpoint URLs or cache management.",
+      "Components never call Axios directly."
+    ],
+    "applicationSurfaces": [
+      {
+        "name": "PUBLIC",
+        "targetLayout": "PublicLayout",
+        "status": "PLANNED"
+      },
+      {
+        "name": "CUSTOMER",
+        "targetLayout": "CustomerLayout",
+        "status": "PLANNED"
+      },
+      {
+        "name": "ORGANIZATION_ADMIN",
+        "targetLayout": "OrganizationAdminLayout",
+        "status": "PLANNED"
+      },
+      {
+        "name": "PLATFORM_ADMIN",
+        "targetLayout": "PlatformAdminLayout",
+        "status": "PLANNED"
+      }
+    ]
+  },
+  "dataAccess": {
+    "transport": {
+      "library": "Axios",
+      "currentClientPath": "src/shared/api/httpClient.ts",
+      "targetDirectory": "src/shared/api/http",
+      "sharedResponsibilities": [
+        "base URL and timeout configuration",
+        "credential and approved header handling",
+        "safe error normalization",
+        "correlation identifier propagation",
+        "single-flight session refresh when required"
+      ],
+      "featureResponsibilities": [
+        "endpoint paths",
+        "request DTO construction",
+        "response DTO mapping",
+        "feature-specific error interpretation"
+      ],
+      "prohibited": [
+        "Axios calls from components or pages",
+        "business endpoints in the shared HTTP client",
+        "automatic X-Shop-ID attachment to non-shop-scoped requests"
+      ]
+    },
+    "serverState": {
+      "library": "TanStack Query",
+      "providerPath": "src/app/providers/AppProviders.tsx",
+      "featureDirectory": "queries",
+      "responsibilities": [
+        "query key factories",
+        "query and mutation hooks",
+        "loading, error, empty, and success state exposure",
+        "targeted cache invalidation",
+        "retry and stale-time policies"
+      ],
+      "queryKeyPolicy": [
+        "Include organization identity in every organization-scoped query key.",
+        "Include shop identity in every shop-scoped query key.",
+        "Include selected profile identity when results vary by authenticated profile.",
+        "Use stable serializable filters and pagination values."
+      ],
+      "cacheIsolationPolicy": [
+        "Clear authenticated server state on logout.",
+        "Remove or invalidate affected queries when profile, organization, or shop context changes.",
+        "Never duplicate TanStack Query server state in Context or component state."
+      ]
+    },
+    "dtoPolicy": {
+      "transportTypes": "Generated from OpenAPI when available.",
+      "featureModels": "Owned by each feature under model.",
+      "mappingRule": "Feature API adapters map transport DTOs into feature models before UI consumption.",
+      "databaseSchemaRule": "Do not generate frontend DTOs directly from the relational database schema."
+    },
+    "requestFlow": [
+      "page or component",
+      "feature query or mutation hook",
+      "feature API adapter",
+      "shared Axios client",
+      "backend API"
+    ]
+  },
+  "featureTemplate": {
+    "rootPattern": "src/features/{featureName}",
+    "directories": [
+      {
+        "name": "api",
+        "responsibility": "Axios-backed endpoint functions, transport contracts, and DTO mappers."
+      },
+      {
+        "name": "queries",
+        "responsibility": "TanStack Query keys, queries, mutations, and cache policies."
+      },
+      {
+        "name": "model",
+        "responsibility": "Feature types, validation schemas, state machines, and domain-facing mapping rules."
+      },
+      {
+        "name": "components",
+        "responsibility": "Feature-owned reusable presentation and interaction components."
+      },
+      {
+        "name": "pages",
+        "responsibility": "Route-level feature composition."
+      },
+      {
+        "name": "routes",
+        "responsibility": "Feature route definitions and route metadata."
+      }
+    ],
+    "publicApiPolicy": "Add an index.ts public API when a feature exports implementation. Do not expose internal files through deep imports.",
+    "creationPolicy": "Create implementation files only when the corresponding capability is being developed."
+  },
+  "backendContextMappings": [
+    {
+      "context": "IDENTITY_ACCESS",
+      "backendSchemaModules": ["IDENTITY_AND_AUTHENTICATION", "AUTHENTICATION"],
+      "frontendFeatures": ["authentication"],
+      "backendPlanningName": "identity-access",
+      "responsibilities": [
+        "login, refresh, logout, and recovery",
+        "session-bound identity and selected profile context",
+        "authentication-safe error behavior"
+      ]
+    },
+    {
+      "context": "TENANCY",
+      "backendSchemaModules": ["TENANCY"],
+      "frontendFeatures": ["tenancy", "organizations", "shops", "organization-onboarding"],
+      "backendPlanningName": "tenancy",
+      "responsibilities": [
+        "organization resolution",
+        "explicit shop selection",
+        "organization and shop lifecycle",
+        "multi-tenant and standalone deployment behavior"
+      ]
+    },
+    {
+      "context": "STAFF_ACCESS",
+      "backendSchemaModules": ["STAFF_PROFILE", "STAFF_AUTHORIZATION"],
+      "frontendFeatures": ["staff-access"],
+      "backendPlanningName": "staff-access",
+      "responsibilities": [
+        "platform and organization staff profiles",
+        "roles, permissions, assignments, and scope-aware UI"
+      ]
+    },
+    {
+      "context": "CUSTOMER_ACCOUNT",
+      "backendSchemaModules": ["CUSTOMER_PROFILE", "CUSTOMER_AUTHORIZATION"],
+      "frontendFeatures": ["customer-account"],
+      "backendPlanningName": "customer-account",
+      "responsibilities": [
+        "customer profile and address management",
+        "organization and shop customer membership",
+        "customer roles, permissions, and scoped access"
+      ]
+    },
+    {
+      "context": "CUSTOMER_ENGAGEMENT",
+      "backendSchemaModules": ["CUSTOMER_ENGAGEMENT"],
+      "frontendFeatures": ["customer-favorites", "shops"],
+      "backendPlanningName": "customer-engagement",
+      "responsibilities": ["favorite-shop discovery and management"]
+    },
+    {
+      "context": "SHOP_OPERATIONS",
+      "backendSchemaModules": ["SHOP_CONFIGURATION", "SHOP_CONTENT"],
+      "frontendFeatures": ["shop-management", "shops"],
+      "backendPlanningName": "shop-operations",
+      "responsibilities": ["operating hours", "shop images and presentation content"]
+    },
+    {
+      "context": "CATALOG",
+      "backendSchemaModules": ["CATALOG", "CATALOG_CONTENT"],
+      "frontendFeatures": ["catalog"],
+      "backendPlanningName": "catalog",
+      "responsibilities": ["categories and hierarchy", "brands, products, and product images"]
+    },
+    {
+      "context": "INVENTORY",
+      "backendSchemaModules": ["CATALOG_AND_INVENTORY"],
+      "frontendFeatures": ["inventory", "catalog"],
+      "backendPlanningName": "inventory",
+      "responsibilities": ["shop product offers", "shop-scoped price and availability presentation"]
+    },
+    {
+      "context": "CART",
+      "backendSchemaModules": ["CART"],
+      "frontendFeatures": ["cart", "checkout"],
+      "backendPlanningName": "cart",
+      "responsibilities": ["cart lifecycle and cart items"]
+    },
+    {
+      "context": "ORDER",
+      "backendSchemaModules": ["ORDER"],
+      "frontendFeatures": ["orders", "checkout"],
+      "backendPlanningName": "orders",
+      "responsibilities": [
+        "checkout orchestration",
+        "orders and immutable order items",
+        "order, payment, and fulfillment status presentation"
+      ]
+    },
+    {
+      "context": "AUDIT",
+      "backendSchemaModules": ["AUDIT"],
+      "frontendFeatures": ["audit"],
+      "backendPlanningName": "audit",
+      "responsibilities": ["permission-protected audit search and presentation"]
+    }
+  ],
+  "features": [
+    {
+      "name": "home",
+      "path": "src/features/home",
+      "kind": "PAGE_COMPOSITION",
+      "status": "PARTIALLY_IMPLEMENTED",
+      "backendContexts": []
+    },
+    {
+      "name": "organization-onboarding",
+      "path": "src/features/organization-onboarding",
+      "kind": "CROSS_CONTEXT_WORKFLOW",
+      "status": "STRUCTURE_ONLY",
+      "contractStatus": "BACKEND_CONTRACT_REQUIRED",
+      "backendContexts": ["IDENTITY_ACCESS", "TENANCY", "STAFF_ACCESS", "AUDIT"]
+    },
+    {
+      "name": "authentication",
+      "path": "src/features/authentication",
+      "kind": "BUSINESS_CAPABILITY",
+      "status": "STRUCTURE_ONLY",
+      "backendContexts": ["IDENTITY_ACCESS"]
+    },
+    {
+      "name": "tenancy",
+      "path": "src/features/tenancy",
+      "kind": "CROSS_CUTTING_BUSINESS_CONTEXT",
+      "status": "STRUCTURE_ONLY",
+      "backendContexts": ["TENANCY"]
+    },
+    {
+      "name": "organizations",
+      "path": "src/features/organizations",
+      "kind": "BUSINESS_CAPABILITY",
+      "status": "STRUCTURE_ONLY",
+      "backendContexts": ["TENANCY"]
+    },
+    {
+      "name": "shops",
+      "path": "src/features/shops",
+      "kind": "BUSINESS_CAPABILITY",
+      "status": "PARTIALLY_IMPLEMENTED",
+      "backendContexts": ["TENANCY", "CUSTOMER_ENGAGEMENT", "SHOP_OPERATIONS"],
+      "note": "Current implementation uses static favorite-shop presentation data and should be split by capability as APIs are introduced."
+    },
+    {
+      "name": "staff-access",
+      "path": "src/features/staff-access",
+      "kind": "BUSINESS_CAPABILITY",
+      "status": "STRUCTURE_ONLY",
+      "backendContexts": ["STAFF_ACCESS"]
+    },
+    {
+      "name": "customer-account",
+      "path": "src/features/customer-account",
+      "kind": "BUSINESS_CAPABILITY",
+      "status": "STRUCTURE_ONLY",
+      "backendContexts": ["CUSTOMER_ACCOUNT"]
+    },
+    {
+      "name": "customer-favorites",
+      "path": "src/features/customer-favorites",
+      "kind": "BUSINESS_CAPABILITY",
+      "status": "STRUCTURE_ONLY",
+      "backendContexts": ["CUSTOMER_ENGAGEMENT"]
+    },
+    {
+      "name": "shop-management",
+      "path": "src/features/shop-management",
+      "kind": "BUSINESS_CAPABILITY",
+      "status": "STRUCTURE_ONLY",
+      "backendContexts": ["TENANCY", "SHOP_OPERATIONS"]
+    },
+    {
+      "name": "catalog",
+      "path": "src/features/catalog",
+      "kind": "BUSINESS_CAPABILITY",
+      "status": "STRUCTURE_ONLY",
+      "backendContexts": ["CATALOG", "INVENTORY"]
+    },
+    {
+      "name": "inventory",
+      "path": "src/features/inventory",
+      "kind": "BUSINESS_CAPABILITY",
+      "status": "STRUCTURE_ONLY",
+      "backendContexts": ["INVENTORY"]
+    },
+    {
+      "name": "cart",
+      "path": "src/features/cart",
+      "kind": "BUSINESS_CAPABILITY",
+      "status": "STRUCTURE_ONLY",
+      "backendContexts": ["CART"]
+    },
+    {
+      "name": "checkout",
+      "path": "src/features/checkout",
+      "kind": "CROSS_CONTEXT_WORKFLOW",
+      "status": "STRUCTURE_ONLY",
+      "backendContexts": ["CART", "ORDER"]
+    },
+    {
+      "name": "orders",
+      "path": "src/features/orders",
+      "kind": "BUSINESS_CAPABILITY",
+      "status": "STRUCTURE_ONLY",
+      "backendContexts": ["ORDER"]
+    },
+    {
+      "name": "audit",
+      "path": "src/features/audit",
+      "kind": "BUSINESS_CAPABILITY",
+      "status": "STRUCTURE_ONLY",
+      "backendContexts": ["AUDIT"]
+    }
+  ],
+  "crossCuttingPolicies": {
+    "tenantContext": [
+      "Organization context comes from trusted host, path, or authenticated session resolution.",
+      "Client input never overrides a trusted organization context.",
+      "Organization-level operations may run without shop context.",
+      "Shop-scoped operations require an explicit or server-derived shop.",
+      "The frontend never infers an organization-wide default shop."
+    ],
+    "authorization": [
+      "The selected session profile type and profile identifier remain explicit.",
+      "The UI renders actions from permission codes and assignment scope, not role names.",
+      "Frontend guards improve user experience but never replace backend authorization."
+    ],
+    "security": [
+      "Do not store secrets in frontend code.",
+      "Prefer secure HttpOnly cookies or in-memory access tokens over localStorage bearer tokens.",
+      "Do not expose raw Axios error payloads directly to users.",
+      "Clear protected query data when the authenticated context ends."
+    ],
+    "dataTypes": [
+      "Represent UUID values as strings.",
+      "Represent decimal money values as decimal strings or explicit money value objects, never binary floating point.",
+      "Treat API status codes as stable identifiers and map display labels in presentation code.",
+      "Parse and display timestamps at system boundaries using the relevant organization or shop timezone."
+    ],
+    "responsiveAndAccessibility": [
+      "Verify visual changes at 360px, 768px, and 1280px.",
+      "Use semantic HTML, labeled controls, keyboard interaction, and managed focus.",
+      "Cover breakpoint-sensitive navigation and workflows with Playwright."
+    ]
+  },
+  "governance": {
+    "featureStatusValues": ["STRUCTURE_ONLY", "PARTIALLY_IMPLEMENTED", "IMPLEMENTED", "DEPRECATED"],
+    "updateTriggers": [
+      "A backend schema module is added, renamed, split, or removed.",
+      "An OpenAPI operation changes feature ownership.",
+      "A frontend feature or application layer is added, renamed, moved, or removed.",
+      "Axios, TanStack Query, tenant context, session, or authorization policy changes.",
+      "A cross-context workflow is introduced or materially changed."
+    ],
+    "reviewChecklist": [
+      "Every backend schema module is mapped to at least one frontend feature.",
+      "Every feature path in this manifest exists.",
+      "Feature dependencies follow the documented layer rules.",
+      "OpenAPI remains the request and response contract.",
+      "Significant architectural decisions receive an ADR.",
+      "The manifest and affected architecture diagrams are updated in the same pull request."
+    ],
+    "generationPolicy": {
+      "frontend": "This manifest may support documentation and structural validation, but implementation files must not be generated without a reviewed feature contract.",
+      "backend": "This manifest may inform backend bounded-context planning but must not generate database entities, repositories, or security rules. The backend schema, API contract, and backend ADRs remain authoritative.",
+      "apiClient": "Generate transport DTOs and clients only from the versioned OpenAPI contract."
+    },
+    "recommendedAutomation": [
+      "Validate this document against a JSON Schema in CI.",
+      "Check that declared feature paths exist.",
+      "Check that every backend schema module is represented exactly as intended.",
+      "Enforce import boundaries with ESLint.",
+      "Detect OpenAPI generated-client drift in CI."
+    ]
+  }
+}
